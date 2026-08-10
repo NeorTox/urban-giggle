@@ -1,0 +1,34 @@
+THE TAPESTRY OF AETHRA
+All Rights Reserved
+
+Copyright (c) 2026 Steve Alphones Chacko
+
+This work — including but not limited to the world of Aethra; its
+cosmology, continents, nations, races, languages, magic system,
+bestiary, history, characters, and all other original written
+content (collectively, the "Work") — together with the accompanying
+reference website's design, source code, and visual assets
+(the "Site") is the exclusive property of Steve Alphones Chacko.
+
+All rights are reserved. No part of the Work or the Site may be:
+
+  - reproduced or copied, in whole or in part, in any form;
+  - distributed, published, or publicly displayed;
+  - modified or used to create derivative works;
+  - used for commercial purposes; or
+  - incorporated into any other project, publication, game, or
+    media,
+
+without the prior written permission of the copyright holder.
+
+This restriction applies regardless of medium, including but not
+limited to print, digital, web, and any future format not yet in
+existence.
+
+For permission requests or licensing inquiries, contact the
+copyright holder directly.
+
+---
+This notice covers the accompanying files:
+  - Tapestry_of_Aethra_Reorganized.docx
+  - Aethra_Codex_Website.html
