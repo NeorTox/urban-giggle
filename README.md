@@ -2,7 +2,7 @@
 
 A reference codex for *Aethra* — an original high-fantasy world spanning four cosmological realms, eight continents, twenty-five schools of magic, one hundred sentient races, and centuries of history.
 
-**🔗 Live site:** https://YOUR-USERNAME.github.io/YOUR-REPO-NAME/
+**🔗 Live site:** https://neortox.github.io/urban-giggle/
 
 ## What's in here
 
