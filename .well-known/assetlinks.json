@@ -1,1 +1,9 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "io.github.neortox.twa",
+        "sha256_cert_fingerprints": ["C9:D8:6E:22:B0:54:92:90:A4:53:EE:20:55:6C:1D:A7:D3:99:A1:DD:93:9B:D7:B9:62:1B:D0:CB:2F:CD:97:CF"]
+      }
+    }]
 
