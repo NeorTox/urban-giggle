@@ -4651,6 +4651,10 @@ html[data-theme="day"] .toast{background:#efe6c9; color:var(--ink);}
       <span class="chat-online-count" id="chatOnlineCount"></span>
     </div>
     <div class="chat-header-actions">
+      <button class="chat-icon-btn" id="chatSoundBtn" title="Toggle message sound" aria-label="Toggle message notification sound">
+        <svg id="chatSoundOnIcon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+        <svg id="chatSoundOffIcon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M11 5 6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+      </button>
       <button class="chat-icon-btn" id="chatDownloadBtn" title="Download transcript" aria-label="Download chat transcript">
         <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       </button>
@@ -5605,6 +5609,7 @@ window.__AETHRA_CHAT__ = {
         if (seenMessages[key]) return;
         seenMessages[key] = true;
         appendChatMessage(data);
+        if (data.username !== chatUsername) playChatChime();
       });
 
       chatChannel.bind('chat-cleared', function(){
@@ -5774,6 +5779,66 @@ window.__AETHRA_CHAT__ = {
       .finally(function(){
         if (btn) btn.disabled = false;
       });
+  }
+
+  /* ---------------- notification sound ---------------- */
+  var chatSoundEnabled = storeGet('aethra-chat-sound');
+  if (chatSoundEnabled === null) chatSoundEnabled = true; // on by default
+  var audioCtx = null;
+
+  function getAudioCtx(){
+    if (!audioCtx){
+      try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+      catch(e){ return null; }
+    }
+    return audioCtx;
+  }
+
+  function playChatChime(){
+    if (!chatSoundEnabled) return;
+    var ctx = getAudioCtx();
+    if (!ctx) return;
+    try {
+      if (ctx.state === 'suspended') ctx.resume();
+      var now = ctx.currentTime;
+
+      // soft two-note chime (fifth interval), matching the codex's gentle tone
+      [[880, now, 0.17], [1174.66, now + 0.09, 0.22]].forEach(function(note){
+        var freq = note[0], start = note[1], dur = note[2];
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0, start);
+        gain.gain.linearRampToValueAtTime(0.11, start + 0.015);
+        gain.gain.exponentialRampToValueAtTime(0.0001, start + dur);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(start);
+        osc.stop(start + dur + 0.02);
+      });
+    } catch(e){ /* audio can fail silently — never block chat over this */ }
+  }
+
+  function applySoundIcon(){
+    var onIcon = document.getElementById('chatSoundOnIcon');
+    var offIcon = document.getElementById('chatSoundOffIcon');
+    if (!onIcon || !offIcon) return;
+    onIcon.style.display = chatSoundEnabled ? '' : 'none';
+    offIcon.style.display = chatSoundEnabled ? 'none' : '';
+  }
+
+  function initChatSound(){
+    applySoundIcon();
+    var btn = document.getElementById('chatSoundBtn');
+    if (!btn) return;
+    btn.addEventListener('click', function(){
+      chatSoundEnabled = !chatSoundEnabled;
+      storeSet('aethra-chat-sound', chatSoundEnabled);
+      applySoundIcon();
+      if (chatSoundEnabled) playChatChime(); // quick preview so the toggle feels responsive
+      else showToast('Chat sound muted.', 1400);
+    });
   }
 
   function initChat(){
@@ -6272,6 +6337,7 @@ window.__AETHRA_CHAT__ = {
   renderBookmarksPanel();
   initContinuePill();
   initChat();
+  initChatSound();
   initAdminPanel();
   initVisitCounter();
   initToolsModal();
